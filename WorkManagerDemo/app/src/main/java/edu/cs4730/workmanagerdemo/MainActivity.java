@@ -6,13 +6,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.net.DhcpInfo;
 import android.net.Network;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -26,22 +32,17 @@ import androidx.work.WorkManager;
 
 import edu.cs4730.workmanagerdemo.databinding.ActivityMainBinding;
 
-/**
- * need a simple worker, parameter worker.  Then chain them together for the last example.  maybe a parallel
- * Make sure you are looking at the logcat as well.  You can see what the workers are doing.
- * <p>
- * see https://developer.android.com/topic/libraries/architecture/adding-components
- * note, no toasts in workers, so POST_NOTIFICATION permission is not needed.
- */
-@SuppressLint("SetTextI18n")
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        Blaster mBlaster = new Blaster(this);
 
         //set the click listeners for the three buttons.
         binding.btnOneshot.setOnClickListener(new View.OnClickListener() {
@@ -51,10 +52,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        binding.btnParam.setOnClickListener(new View.OnClickListener() {
+        binding.btnBlastem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                param();
+                mBlaster.toggleLights();
             }
         });
     }
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         PeriodicWorkRequest runWorkA = workerkBuilder.setConstraints(myConstraints)
         .build();
        */
-        PeriodicWorkRequest.Builder workerkBuilder = new PeriodicWorkRequest.Builder(WorkerA.class, 10,  TimeUnit.SECONDS);
+        PeriodicWorkRequest.Builder workerkBuilder = new PeriodicWorkRequest.Builder(WorkerA.class, 20,  TimeUnit.MINUTES);
         Constraints myConstraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build();
@@ -123,30 +124,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    //This shows how to set input and receive a result for a worker task.
-    public void param() {
-        // Create the Data object:
-        final Data myData = new Data.Builder()
-                // We need to pass three integers: X, Y, and Z
-                .putInt(WorkerParameters.KEY_X_ARG, 42)
-                // ... and build the actual Data object:
-                .build();
-
-        // ...then create and enqueue a OneTimeWorkRequest that uses those arguments
-        OneTimeWorkRequest mathWork = new OneTimeWorkRequest.Builder(WorkerParameters.class).setInputData(myData).build();
-        WorkManager.getInstance(getApplicationContext()).enqueue(mathWork);
-
-        //now set the observer to get the result.
-        WorkManager.getInstance(getApplicationContext()).getWorkInfoByIdLiveData(mathWork.getId()).observe(this, new Observer<WorkInfo>() {
-            @Override
-            public void onChanged(@Nullable WorkInfo status) {
-                if (status != null && status.getState().isFinished()) {
-                    int myResult = status.getOutputData().getInt(WorkerParameters.KEY_RESULT, -1);
-                    binding.tvParam.setText("Result is " + myResult);
-                }
-            }
-        });
-    }
-
 }

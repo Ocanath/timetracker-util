@@ -11,46 +11,18 @@
         android:id="@+id/btn_oneshot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="One Shot run."/>
+        android:text="Periodic Task run."/>
 
     <TextView
         android:id="@+id/tv_oneshot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="OneShot Status:  Not started."/>
+        android:text="Periodic Status:  Not started."/>
 
     <Button
-    android:id="@+id/btn_param"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Parameter Worker"/>
-
-    <TextView
-        android:id="@+id/tv_param"
+        android:id="@+id/btn_blastem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="result:  Not started."/>
-
-    <Button
-        android:id="@+id/btn_chain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chain of  Worker tasks"/>
-
-    <TextView
-        android:id="@+id/tv_chaina"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="A: not started"/>
-    <TextView
-        android:id="@+id/tv_chainb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="B: not started"/>
-    <TextView
-        android:id="@+id/tv_chainc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="C: not started"/>
+        android:text="Lights on / off"/>
 
 </LinearLayout>

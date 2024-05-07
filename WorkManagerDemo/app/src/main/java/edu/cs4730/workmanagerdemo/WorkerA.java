@@ -2,13 +2,19 @@ package edu.cs4730.workmanagerdemo;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
+
+import android.net.DhcpInfo;
+import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 
 /**
  * very simple worker to fake some work and allow the MainActivity to observe.  It is intended to run
@@ -24,14 +30,25 @@ public class WorkerA extends Worker {
         super(context, workerParams);
     }
 
-    private DatagramSocket soc;
-    private InetAddress addr;
-    private int port;
+    Blaster mblaster = new Blaster(this.getApplicationContext());
 
     @NonNull
     @Override
     public Result doWork() {
-        Log.d("workerA", "WAZZAAAAAP");
+        long duration = 20*60*1000;  //milliseconds
+        long loopdelay = 30000; //milliseconds
+        for(long iters = 0; iters < duration/loopdelay; iters++)
+        {
+            Log.d("workerA", "iteration "+iters);
+            mblaster.blastMessage();
+            try {
+                Thread.sleep(loopdelay);
+            }catch (InterruptedException e){
+                return Result.failure();
+            }
+        }
+        Log.d("workerA", "done.");
         return Result.success();
     }
 }
+

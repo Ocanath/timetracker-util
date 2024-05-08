@@ -7,10 +7,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.net.DhcpInfo;
 import android.net.Network;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.TextView;
 
@@ -41,6 +45,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        Intent m_intent = new Intent();
+        String packageName = this.getPackageName();
+        PowerManager pm = (PowerManager)this.getSystemService(Context.POWER_SERVICE);
+        if(pm.isIgnoringBatteryOptimizations(packageName))
+            m_intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+        else{
+            m_intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            m_intent.setData(Uri.parse("package:" + packageName));
+        }
+        this.startActivity(m_intent);
 
         Blaster mBlaster = new Blaster(this);
 

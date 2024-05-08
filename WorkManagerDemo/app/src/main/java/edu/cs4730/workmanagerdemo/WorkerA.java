@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
+import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.work.Worker;
